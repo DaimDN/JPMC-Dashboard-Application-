@@ -5,7 +5,7 @@ module.exports.middleware = async(req, res, next)=>{
     const token = req.header('x-auth-token');
 
     if(!token){
-        return res.status(401).json({msg: 'No token found auth denied'});
+        return res.status(401).json({msg: 'Forbidden Access'});
     }
     try {
         jwt.verify(token, config.get('secret'), (error, decoded)=>{
