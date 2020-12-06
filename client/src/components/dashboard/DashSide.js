@@ -27,7 +27,7 @@ export default function DashSide() {
         }}>
        
        <div style={{margin: 'auto', width: '120%'}}>
-       <nav class="navbar navbar-expand-lg gamma"  style={{borderRadius: '50px', backgroundColor: 'rgb(0, 0, 0, 0.8)'}}>
+       <nav class="navbar navbar-expand-lg gamma"  style={{borderRadius: '30px', backgroundColor: 'rgb(0, 0, 0, 0.8)'}}>
          
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
