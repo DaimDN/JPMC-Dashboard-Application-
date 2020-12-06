@@ -193,26 +193,30 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
        zIndex: '200',
        top: '-10px',
        height: '200vh',
-       backgroundColor: 'rgb(0, 0, 0, 0.8)',
+       backgroundColor: 'rgb(0, 0, 0, 0.9)',
        
        
        }}>
 
        <div className="container" style={{
          position: 'absolute', 
-         marginTop: '20vh',
+         marginTop: '22vh',
          zIndex: '400', 
-         marginLeft: '16%',
+         marginLeft: '20%',
          color: 'black'
          
          
          }}>
 
-         <div>
-         <h3 className="text-white">Do you want to Logout ?</h3>
-          <br/> <br/>
-          <a href="/dashboard" className="btn btn-white btn-lg">Cancel</a>
-          <button onClick={logout}  className="btn btn-danger btn-lg">Logout</button>
+         <div style={{}}>
+         <h1 style={{fontWeight: '700'}} className="text-white display-4">Do you want to Logout ?</h1>
+          <br/> 
+          <a
+            style={{marginRight: '50px'}}
+           href="/dashboard" className="btn btn-white btn-lg">Cancel</a>
+          <button 
+            style={{marginRight: '50px'}}
+           onClick={logout}  className="btn btn-danger btn-lg">Logout</button>
          </div>
 
 
@@ -226,10 +230,6 @@ const Navbar = ({ auth: { isAuthenticated }, logout }) => {
 
       </div>)}
     </Fragment>
-
-
-  
-       
     </div>
     
   );

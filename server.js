@@ -4,7 +4,10 @@ const cors = require('cors');
 const connection = require('./config/dbconnector');
 const chalk = require('chalk');
 const config = require('config');
-
+const hdfs = require('./hadoop/hdfs');
+const fastcsv = require("fast-csv");
+const fs = require("fs");
+const csv=require('csvtojson')
 
 connection.connect(function(err){
 
@@ -46,6 +49,89 @@ app.use(function(req, res, next){
         res.send(errormessage);
     }
 })
+
+//check the files
+const date = new Date();
+const today = date.toLocaleDateString().split("/").join("");
+const path = './files/' + today + ".csv";
+
+var localFileStream= hdfs.createWriteStream(path);
+var remoteFileStream = hdfs.createWriteStream(path);
+
+
+  if (fs.existsSync(path)) {
+    var filename = path;
+    csv()
+        .fromFile(filename)
+        .then((CsvFileData)=>{
+           
+            connection.query("SELECT * FROM users", function(error, data, fields) {
+                if (error) throw error;
+            
+                const MYSQLdata = JSON.parse(JSON.stringify(data));
+
+                if (MYSQLdata.length == CsvFileData.length){
+                    console.log("File is already there");
+                    
+                    localFileStream.pipe(remoteFileStream);
+ 
+                    remoteFileStream.on('error', function onError (err) {
+                        console.log("error");
+                    });
+                    
+                    remoteFileStream.on('finish', function onFinish () {
+                            console.log("finshed");
+                    });
+                      
+                }
+                else{
+                    const ws = fs.createWriteStream(path);
+
+
+                    connection.query("SELECT * FROM users", function(error, data, fields) {
+                      if (error) throw error;
+                  
+                      const jsonData = JSON.parse(JSON.stringify(data));
+                      localFileStream.pipe(remoteFileStream);
+                      remoteFileStream.on('error', function onError (err) {
+                        console.log(err);
+                        remoteFileStream.on('finish', function onFinish () {
+                            console.log("File Written Successfully");
+                          });
+                      });
+
+                  
+                      fastcsv
+                        .write(jsonData, { headers: true })
+                        .on("finish", function() {
+                          console.log(path +" path has been written successfully");
+                        })
+                        .pipe(ws);
+                    });
+                }
+                
+        
+            });
+        
+        })
+  }else{     
+    const ws = fs.createWriteStream(path);
+
+
+        connection.query("SELECT * FROM users", function(error, data, fields) {
+          if (error) throw error;
+      
+          const jsonData = JSON.parse(JSON.stringify(data));
+      
+          fastcsv
+            .write(jsonData, { headers: true })
+            .on("finish", function() {
+              console.log(path +" path has been written successfully");
+            })
+            .pipe(ws);
+        });
+
+  }
 
 
 module.exports = app;
